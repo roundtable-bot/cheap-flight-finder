@@ -11,6 +11,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Added
 
+- Mistake-fare search mode for error pricing, error fares, and glitch fares, with flexible travel windows, recent deal leads, sourced price comparisons, and seller verification.
 - Automatic CAPTCHA attempts with browser tools, bounded retries, and manual fallback.
 - Verification-checkbox handling in `search_sites.js`, with offline tests for challenge detection and fallback.
 

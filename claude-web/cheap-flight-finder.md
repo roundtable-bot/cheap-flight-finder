@@ -2,13 +2,15 @@
 
 # Cheap Flight Finder
 
-Follow these instructions when I ask you to: Find the cheapest flight by comparing Google Flights, Skyscanner, Cheapflights, TeaFlight, and Trip.com at the same time; works without a browser tool via bundled scripts. Use whenever the user wants to search, compare, price, or book flights or airfare ("find me a flight to…", "how much to fly…", "cheapest way to get to…").
+Follow these instructions when I ask you to: Find cheap flights and possible error fares by comparing Google Flights, Skyscanner, Cheapflights, TeaFlight, and Trip.com; works without a browser tool via bundled scripts. Use for flight searches, airfare comparisons, error pricing, mistake fares, glitch fares, or unusually cheap flights, including flexible dates and destinations.
 
 Collect the trip details, search all five providers at the same time with identical details, and report the cheapest option you actually saw. Works with or without a browser: see step 2.
 
+**Choose the search mode:** for "error pricing", "error fares", "mistake fares", or "glitch fares", use [Mistake-fare search](#mistake-fare-search). For ordinary cheapest-flight requests, follow steps 1–3. A low price alone does not prove a pricing mistake.
+
 ## 1. Collect the trip details
 
-You need all of these before searching. Pull whatever the user already said from the conversation, then ask for the rest in **one** message (not one question at a time):
+For an ordinary flight search, you need all of these before searching. Pull whatever the user already said from the conversation, then ask for the rest in **one** message (not one question at a time):
 
 | # | Detail | Notes |
 |---|--------|-------|
@@ -34,7 +36,7 @@ Convert cities to IATA codes (e.g. New York = NYC or JFK, London = LON) and date
 
 ## 2. Search
 
-**Always search all five providers.** Don't stop at one site. Pick the first route your tools allow:
+**Always attempt all five providers for a trip you compare.** In mistake-fare mode, first discover candidates, then compare the shortlist across all five. Pick the first route your tools allow:
 
 1. **You can drive a browser** (browser/Playwright/Chrome tools, or a computer-use tool): search all five sites in the table below. Go to [Search with a browser](#search-with-a-browser).
 2. **You can run shell commands** (e.g. a plain Claude Code install): run both bundled scripts at the same time. Go to [Search with the bundled scripts](#search-with-the-bundled-scripts).
@@ -99,7 +101,7 @@ Each provider search should return its **3 cheapest** results that match **every
 provider | total price (all passengers, with currency) | airline(s) + flight numbers | depart → arrive times | stops (+ layover airports/durations) | total duration | baggage included? | booking link
 ```
 
-Write down the **total price including taxes and fees** for all passengers. You don't need to go to checkout, but if a site shows a crossed-out price next to a lower one, record the price you would actually pay and mention the other. Note it if the price is "from" or per person only. If the dates are flexible, also check the provider's calendar or "flexible dates" view and note any cheaper day.
+Write down the **total price including taxes and fees** for all passengers. For ordinary comparisons, you don't need to go to checkout; mistake-fare candidates need the seller check below. If a site shows a crossed-out price next to a lower one, record the current price and mention the other. Note it if the price is "from" or per person only. If the dates are flexible, also check the provider's calendar or "flexible dates" view and note any cheaper day.
 
 ### Handle CAPTCHAs automatically
 
@@ -113,6 +115,47 @@ Try to complete an interactive challenge with your available browser tools befor
 
 This uses the agent's existing browser and visual abilities; it does not require a paid CAPTCHA service. Success depends on the challenge and the available tools.
 
+### Mistake-fare search
+
+This is an on-demand search for possible airline or seller pricing mistakes. Do not promise continuous monitoring, alerts, a complete worldwide scan, or a guaranteed error fare.
+
+#### Set the search scope
+
+Collect the departure airport(s), destination or allowed region ("anywhere" is valid), departure window, trip type and acceptable stay length for round trips, passengers, cabin, and stops. Ask for missing details together; reuse anything already supplied. Accept a month or date range instead of demanding exact dates. Ask whether nearby departure airports are allowed; do not silently include them. Apply any budget the user gives.
+
+For example: "Find mistake fares from JFK or EWR to anywhere in Europe, departing in November 2026 for 5–9 nights, round trip, 1 adult, economy, connections OK, under $400 total."
+
+#### Discover and compare candidates
+
+1. **Look for recent leads.** If web search or a browser is available, check public [Secret Flying error-fare reports](https://www.secretflying.com/error-fares/) and search for `"mistake fare"` / `"error fare"` with the origin or region. Start with reports published in the last 48 hours. Open the original report and record its publication time, route, travel dates, cabin, currency, and link; search snippets and an updated archive date are not live quotes. Skip expired reports and trips outside the user's scope. A report is only a lead until repriced. If nothing recent matches, continue with live discovery; don't substitute an old deal as current.
+2. **Look for live outliers.** Use Google Flights' destination exploration and date calendar within the permitted window; its [price insights](https://support.google.com/travel/answer/7664728?hl=en) can supply comparison evidence. For "anywhere", choose up to three destinations surfaced by those results or recent leads. With only a shell, use concrete routes from available leads or the user's list; if there are none, ask for a destination shortlist instead of claiming the scripts scan everywhere. Run `google_flights.py` for each exact route/date pair, with `--return` for round trips, sequentially. The scripts search exact dates; they do not discover error fares or historical prices on their own.
+3. **Keep the scan bounded.** Unless the user requests a larger search, inspect up to six exact route/date combinations, including dates used for comparison, and take the best three candidates into step 2's five-provider comparison. A browser calendar can help select those dates. Keep round-trip stays within the allowed range and all other filters identical. State which routes and dates you actually checked. Search different trips sequentially; parallelize only the providers for the same trip. Existing CAPTCHA limits apply across the whole search, not afresh for each date.
+4. **Record why the price is unusual.** Prefer a numeric typical-price value or range shown by a provider for that trip, with its source and scope. If unavailable, use the median of at least three other checked, comparable date totals for the same route, trip type, cabin, passengers, stops, baggage, and round-trip stay length; label it "sampled comparison", never "historical average". Exclude the candidate and duplicate listings of the same itinerary. If the comparison isn't like-for-like or has too few observations, write "baseline unavailable" and omit percentage savings. For a range, use its lower bound conservatively. Calculate `(baseline - candidate total) / baseline × 100` only with positive totals in the same currency.
+5. **Prioritize evidence, not just price.** A discount of at least 50% against that baseline is a triage heuristic, not proof of an airline mistake. A recent, matching error-fare report is another reason to investigate. A normal sale, low-cost carrier fare, or a provider's "low price" badge alone is not enough to call something a mistake. Retain genuinely cheap alternatives separately if no candidate has strong evidence.
+
+#### Recheck with the seller
+
+For each shortlisted candidate, open the actual airline or travel agency offer and select the exact outbound **and return** flights when applicable. Check the latest total for every passenger, including taxes, mandatory fees, and the user's required baggage. Confirm currency, cabin on every leg, dates, airports, stops, fare restrictions, and eligibility for any advertised discount. Compare with the airline's direct price when accessible; an agency-only fare can still be a candidate, but say where it was found.
+
+Stop before submitting passenger details, holding a reservation, or paying. If the full total requires those steps, a login you cannot access, or unsupported browser interaction, report that seller verification is incomplete. The Google script's outbound result priced as a round trip does not verify a selected return flight. Search-page agreement across several providers does not replace this seller check.
+
+Record the seller URL and UTC check time. If the price rises or disappears, discard the old amount from current offers and mark the lead "expired / price changed" with the new total if shown. This catches the stale listings Going describes as [ghost fares](https://help.going.com/hc/en-us/articles/16914277242900-What-types-of-deals-are-there). Don't count zero or negative prices, missing currency, per-person/whole-trip mismatches, reward tickets, or omitted mandatory costs as error-fare evidence.
+
+#### Report the findings
+
+Lead with the strongest currently checked candidate, then a compact table:
+
+`Route and dates | Total / currency | Comparison baseline and source | Discount | Status | Seller link / checked at (UTC)`
+
+Use these labels consistently:
+
+- **Possible error fare — seller price checked:** an unusually large like-for-like discount or a recent matching error-fare report, plus a complete seller check. Say which evidence triggered the flag; the cause remains unconfirmed.
+- **Unverified lead:** a report or search result whose full seller total could not be checked. Keep these separate from checked offers; do not imply availability.
+- **Low fare — cause unknown:** a seller-checked cheap offer without enough evidence of a pricing mistake.
+- **Expired / price changed:** the reported amount could not be reproduced. Exclude it from the cheapest current offer.
+
+Include the normal flight details from step 3, the evidence link and timestamp, all-passenger/full-trip totals, restrictions, checked providers, and any gaps. If none qualify, say "No seller-checked mistake-fare candidates found in the routes and dates checked" and show any ordinary low fares separately. Do not invent a candidate to fill the table. Briefly note that a checked price does not guarantee ticket issuance or that a possible mistake fare will be honored. Never book automatically.
+
 ## 3. Compare and report
 
 1. Put all results in the same currency and compare total price for all passengers. Exclude any result that breaks a requirement. A cheap fare with a stop doesn't count when the user asked for direct.
@@ -122,7 +165,7 @@ This uses the agent's existing browser and visual abilities; it does not require
 5. Write "not shown" for anything a site didn't show (e.g. baggage). Never guess.
 6. For a one-way trip, leave out the Return line.
 
-Use rendered Markdown, with the cheapest fare first and a compact comparison table. Do not wrap your actual reply in a code block. This example uses illustrative fares; replace every detail with results from the current search:
+Use rendered Markdown, with the cheapest fare first and a compact comparison table. For mistake-fare searches, use that mode's status labels and evidence table, plus the flight details below. Do not wrap your actual reply in a code block. This example uses illustrative fares; replace every detail with results from the current search:
 
 ```markdown
 **Cheapest: $412 USD total on Skyscanner**

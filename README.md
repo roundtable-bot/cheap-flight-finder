@@ -5,13 +5,13 @@
 [![CI](https://github.com/roundtable-bot/cheap-flight-finder/actions/workflows/ci.yml/badge.svg)](https://github.com/roundtable-bot/cheap-flight-finder/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Find cheap flights with your AI agent or assistant. Cheap Flight Finder is a plain [Agent Skills](https://agentskills.io) folder, so it works with Claude Code, Claude.ai, Codex and any other agent that can read a `SKILL.md`.
+Find cheap flights and hunt for possible error fares with your AI agent or assistant. Cheap Flight Finder is a plain [Agent Skills](https://agentskills.io) folder, so it works with Claude Code, Claude.ai, Codex and any other agent that can read a `SKILL.md`.
 
 ## Skills
 
 | Skill | What it does |
 |-------|--------------|
-| [`cheap-flight-finder`](skills/cheap-flight-finder/SKILL.md) | Asks for your trip details, searches Google Flights, Skyscanner, Cheapflights, TeaFlight and Trip.com at the same time, and reports the cheapest option with a booking link. |
+| [`cheap-flight-finder`](skills/cheap-flight-finder/SKILL.md) | Compares Google Flights, Skyscanner, Cheapflights, TeaFlight and Trip.com. Also searches for possible mistake fares using recent reports, flexible dates, and seller price checks. |
 
 ### cheap-flight-finder
 
@@ -43,6 +43,18 @@ San Francisco → New York · One way · 1 adult · Economy
 | Skyscanner | $255 | 1 stop |
 
 The actual reply includes a link to the matching search and the time prices were checked. Confirm the fare and baggage costs before booking.
+
+#### Search for error pricing
+
+Ask for **error fares**, **mistake fares**, **glitch fares**, or **error pricing** to switch modes:
+
+> Find mistake fares from JFK or EWR to anywhere in Europe, departing in November 2026 for 5–9 nights. Round trip, 1 adult, economy, connections OK, under $400 total.
+
+The agent looks for recent public error-fare reports and unusually low live prices within your travel window. It checks up to six route/date combinations by default, compares the best three candidates across the five providers, and opens the seller's offer to verify the full itinerary and total before flagging a possible error fare.
+
+Results include the comparison price and its source, percentage savings when supported, a booking link, and the check time. Seller-checked candidates, unverified leads, ordinary low fares, and expired reports are labeled separately. A large discount is evidence to investigate; it does not prove an airline made a mistake or guarantee that the fare will be honored.
+
+This mode runs when you ask; it does not provide background monitoring or alerts. Flexible discovery and seller verification work best with a browser. With only the bundled scripts, the agent searches exact route/date combinations and marks seller verification incomplete when it cannot inspect the offer. It never books automatically.
 
 #### How it searches
 

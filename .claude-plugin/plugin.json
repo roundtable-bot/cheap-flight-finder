@@ -1,10 +1,10 @@
 {
   "name": "cheap-flight-finder",
   "version": "0.1.0",
-  "description": "Find cheap flights by comparing Google Flights, Skyscanner, Cheapflights, TeaFlight and Trip.com in parallel.",
+  "description": "Compare five flight providers and search for possible error fares with flexible dates, price comparisons, and seller verification.",
   "author": { "name": "DevStrategist" },
   "homepage": "https://github.com/roundtable-bot/cheap-flight-finder",
   "repository": "https://github.com/roundtable-bot/cheap-flight-finder",
   "license": "MIT",
-  "keywords": ["flights", "travel", "airfare", "price-comparison", "agent-skills"]
+  "keywords": ["flights", "travel", "airfare", "price-comparison", "error-fares", "mistake-fares", "agent-skills"]
 }
