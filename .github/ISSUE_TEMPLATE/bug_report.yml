@@ -1,0 +1,28 @@
+name: Bug report
+description: The skill or a script did something wrong.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What you asked the agent, or the command you ran.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: Agent reply or script output. Remove any personal information.
+      render: text
+  - type: input
+    id: env
+    attributes:
+      label: Agent and environment
+      placeholder: Claude Code 2.x on macOS, Node 22, Python 3.12

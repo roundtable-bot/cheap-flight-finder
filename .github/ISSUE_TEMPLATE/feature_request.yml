@@ -1,0 +1,15 @@
+name: Feature or new provider
+description: Suggest a new flight site, a new money-saving skill, or an improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: For a new flight site, include its URL and an example search link.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it useful?

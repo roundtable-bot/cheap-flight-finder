@@ -1,0 +1,39 @@
+name: A flight site stopped working
+description: A provider returns no results, wrong results, or an error.
+labels: [provider-broken]
+body:
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Which site?
+      options: [Google Flights, Skyscanner, Cheapflights, TeaFlight, Trip.com]
+    validations:
+      required: true
+  - type: dropdown
+    id: route
+    attributes:
+      label: How was it searched?
+      options: [Browser tool, google_flights.py, search_sites.js, Prefilled link]
+    validations:
+      required: true
+  - type: textarea
+    id: search
+    attributes:
+      label: The search
+      description: Command or trip details (origin, destination, dates, passengers, cabin, stops).
+      placeholder: node scripts/search_sites.js SFO NYC 2026-12-01 --nonstop
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: What happened
+      description: Paste the script output or error, or describe what the agent reported. Remove any personal information.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Agent and environment
+      placeholder: Claude Code 2.x on macOS, Node 22, Python 3.12

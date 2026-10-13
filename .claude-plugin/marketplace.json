@@ -1,0 +1,14 @@
+{
+  "name": "cheap-flight-finder",
+  "description": "Cheap Flight Finder: compare five flight providers with your AI agent.",
+  "owner": {
+    "name": "Roundtable"
+  },
+  "plugins": [
+    {
+      "name": "cheap-flight-finder",
+      "source": "./",
+      "description": "Find cheap flights by comparing Google Flights, Skyscanner, Cheapflights, TeaFlight and Trip.com in parallel."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+# Weekly live search, to catch flight sites that changed their pages.
+# A red run means a provider may need fixing; it never blocks pull requests.
+name: Live provider check
+
+on:
+  schedule:
+    - cron: "0 14 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Google Flights
+        run: |
+          d=$(date -d '+30 days' +%F)
+          python3 skills/cheap-flight-finder/scripts/google_flights.py SFO JFK "$d" | tee google.json
+          python3 -c "import json,sys; r=json.load(open('google.json')); sys.exit(0 if r.get('results') else 'no results')"
+      - name: Other sites
+        run: |
+          npm i --prefix ~/.cache/cheap-flight-finder playwright
+          ~/.cache/cheap-flight-finder/node_modules/.bin/playwright install --with-deps chromium
+          node skills/cheap-flight-finder/scripts/search_sites.js SFO JFK "$(date -d '+30 days' +%F)" > sites.json
+          python3 -c "
+          import json; r = json.load(open('sites.json'))
+          for k, v in r.items(): print(f\"{k}: {v['status']} {v.get('error', '')}\")
+          ok = [k for k, v in r.items() if v['status'] == 'ok' and '\$' in v.get('text', '')]
+          assert ok, 'no site returned prices'"
